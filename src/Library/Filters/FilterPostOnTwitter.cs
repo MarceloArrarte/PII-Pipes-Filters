@@ -28,6 +28,7 @@ namespace CompAndDel.Filters
             TwitterImage apiImagenes = new TwitterImage();
             apiImagenes.PublishToTwitter(this._postText, imagePath);
             
+            Console.WriteLine($"Post {this._postText} uploaded!");
             return image;
         }
     }
