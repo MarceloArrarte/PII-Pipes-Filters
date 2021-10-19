@@ -10,7 +10,7 @@ namespace CompAndDel
         static void Main(string[] args)
         {
             PictureProvider provider = new PictureProvider();
-            IPicture picture = provider.GetPicture(@"beer.jpg");
+            IPicture picture = provider.GetPicture(@"luke.jpg");
             
             IPipe fin = new PipeNull();
 
@@ -18,10 +18,17 @@ namespace CompAndDel
             IPipe pipePostFinal = new PipeSerial(postFinal, fin);
 
             IFilter negativo = new FilterNegative();
-            IPipe pipeNegativo = new PipeSerial(negativo, pipePostFinal);
+            IPipe pipeNegativo = new PipeSerial(negativo, fin);
+
+            IBooleanFilter reconocimientoFacial = new FilterRecognizeFace();
+            IPipe pipeReconocimientoFacial = new PipeConditional(
+                reconocimientoFacial,
+                pipePostFinal,
+                pipeNegativo
+            );
 
             IFilter postIntermedio = new FilterPostOnTwitter("Paso intermedio");
-            IPipe pipePostIntermedio = new PipeSerial(postIntermedio, pipeNegativo);
+            IPipe pipePostIntermedio = new PipeSerial(postIntermedio, pipeReconocimientoFacial);
 
             IFilter guardar = new FilterSave(@"intermediate.jpg");
             IPipe pipeGuardar = new PipeSerial(guardar, pipePostIntermedio);
