@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CompAndDel.Pipes;
 using CompAndDel.Filters;
 
@@ -15,8 +16,11 @@ namespace CompAndDel
             IFilter negativo = new FilterNegative();
             IPipe pipeNegativo = new PipeSerial(negativo, fin);
 
+            IFilter guardar = new FilterSave(@"intermediate.jpg");
+            IPipe pipeGuardar = new PipeSerial(guardar, pipeNegativo);
+
             IFilter greyscale = new FilterGreyscale();
-            IPipe inicio = new PipeSerial(greyscale, pipeNegativo);
+            IPipe inicio = new PipeSerial(greyscale, pipeGuardar);
 
             IPicture resultado = inicio.Send(picture);
 
