@@ -13,11 +13,16 @@ namespace CompAndDel
             IPicture picture = provider.GetPicture(@"beer.jpg");
             
             IPipe fin = new PipeNull();
+            IFilter post = new FilterPostOnTwitter();
+            IPipe pipePostFinal = new PipeSerial(post, fin);
+
             IFilter negativo = new FilterNegative();
-            IPipe pipeNegativo = new PipeSerial(negativo, fin);
+            IPipe pipeNegativo = new PipeSerial(negativo, pipePostFinal);
+
+            IPipe pipePostIntermedio = new PipeSerial(post, pipeNegativo);
 
             IFilter guardar = new FilterSave(@"intermediate.jpg");
-            IPipe pipeGuardar = new PipeSerial(guardar, pipeNegativo);
+            IPipe pipeGuardar = new PipeSerial(guardar, pipePostIntermedio);
 
             IFilter greyscale = new FilterGreyscale();
             IPipe inicio = new PipeSerial(greyscale, pipeGuardar);
