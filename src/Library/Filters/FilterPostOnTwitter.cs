@@ -9,6 +9,12 @@ namespace CompAndDel.Filters
     /// </remarks>
     public class FilterPostOnTwitter : IFilter
     {
+        private string _postText;
+
+        public FilterPostOnTwitter(string postText) {
+            this._postText = postText;
+        }
+
         /// Un filtro que publica en Twitter la imagen recibida y la retorna sin alteraciones.
         /// </summary>
         /// <param name="image">La imagen a publicar.</param>
@@ -20,8 +26,9 @@ namespace CompAndDel.Filters
             provider.SavePicture(image, imagePath);
 
             TwitterImage apiImagenes = new TwitterImage();
-            apiImagenes.PublishToTwitter("Pruebita", imagePath);
+            apiImagenes.PublishToTwitter(this._postText, imagePath);
             
+            Console.WriteLine($"Post {this._postText} uploaded!");
             return image;
         }
     }
